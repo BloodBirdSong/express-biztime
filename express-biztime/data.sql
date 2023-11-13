@@ -28,3 +28,27 @@ INSERT INTO invoices (comp_Code, amt, paid, paid_date)
          ('apple', 200, false, null),
          ('apple', 300, true, '2018-01-01'),
          ('ibm', 400, false, null);
+
+CREATE TABLE industries (
+    id serial PRIMARY KEY,
+    code text NOT NULL REFERENCES companies ON DELETE CASCADE,    
+    name text NOT NULL REFERENCES industries ON DELETE CASCADE
+);
+
+INSERT INTO enterprise (comp_Code, ind_code)
+  VALUES ('acc','Accounting' ),
+         ('eng', 'Engineering'),
+         ('med','Medical');
+
+CREATE TABLE enterprise (
+    id serial PRIMARY KEY,
+    comp_code text NOT NULL REFERENCES companies ON DELETE CASCADE,    
+    ind_code text NOT NULL REFERENCES industries ON DELETE CASCADE
+);
+
+INSERT INTO enterprise (comp_Code, ind_code)
+  VALUES ('apple','med' ),
+         ('apple', 'acc'),
+         ('apple','eng'),
+         ('ibm','acc'),
+         ('ibm','eng');

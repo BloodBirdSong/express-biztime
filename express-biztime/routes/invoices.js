@@ -66,7 +66,26 @@ router.delete('/:comp_code', async (req, res, next) => {
     }
 })
 
+//["100","True"]
+router.put('/:id', async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const invoiceCheck = await db.query('SELECT * FROM invoices WHERE id=$1', [id])
+        if (invoiceCheck.rows.length == 0){
+            throw new ExpressError(`Can't find companie with code of ${code}`, 404)
 
+        }
+        const invoice = req.body;
+        const query = 'UPDATE invoices SET amt=$1, paid=$2,paid_date=$4 WHERE id=$3 RETURNING *'
+        // const query = 'UPDATE companies SET code=$1, name=$2, description=$3 WHERE code=$1 RETURNING code, name, description'
+        let values = invoice
+        values.push(id, new Date().toISOString().slice(0, 19).replace('T', ' '))
+        const results = await db.query(query, values)
+        return res.json({ invoices: results.rows[0] })
+    } catch (e) {
+        return next(e)
+    }
+})
 
 
 
